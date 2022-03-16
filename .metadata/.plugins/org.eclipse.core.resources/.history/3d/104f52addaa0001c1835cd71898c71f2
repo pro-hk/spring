@@ -1,0 +1,7 @@
+package com.prohk.model;
+
+public class ReplyDto {
+	private int no;
+	private int boardid;
+	private String replyl
+}

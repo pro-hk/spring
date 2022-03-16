@@ -1,0 +1,239 @@
+package com.prohk.controller;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.prohk.model.MemberDto;
+import com.prohk.model.MemberService;
+import com.prohk.util.PageWriter;
+import com.prohk.util.ScriptWriter;
+
+import net.coobird.thumbnailator.Thumbnails;
+
+@Controller
+@RequestMapping("/member")
+public class MemberController {
+	@Autowired
+	MemberDto memberDto;
+
+	@Autowired
+	MemberService memberDao;
+
+	@GetMapping("/List.do")
+	public String list(HttpServletRequest request, Model model) {
+		String tempClickPage = request.getParameter("clickPage");
+		String search_select = request.getParameter("search_select");
+		String search_word = request.getParameter("search_word");
+
+		if (search_select == null || search_select.equals("")) search_select = "";
+		if (search_word == null || search_word.equals("")) search_word = "";
+		
+		if (tempClickPage == null)
+			tempClickPage = "1";
+		int clickPage = Integer.parseInt(tempClickPage);
+		int totalPage = memberDao.getTotal(search_select, search_word);
+		int listPerPage = 5;
+		int pageBlock = 3;
+
+		int start = (clickPage - 1) * listPerPage + 1;
+		int end = clickPage * listPerPage;
+
+		List<MemberDto> memberList = memberDao.getAllMemberList(start, end, search_select, search_word);
+
+		String page = "";
+
+		if (!search_word.equals("")) {
+			page = PageWriter.pageWrite(totalPage, listPerPage, pageBlock, clickPage,
+					"../member/List.do?search_select=" + search_select + "search_word=" + search_word);
+		} else {
+			page = PageWriter.pageWrite(totalPage, listPerPage, pageBlock, clickPage, "../member/List.do");
+		}
+
+		model.addAttribute("memberList", memberList);
+		model.addAttribute("page", page);
+		model.addAttribute("totalPage", totalPage);
+		model.addAttribute("clickPage", clickPage);
+		model.addAttribute("listPerPage", listPerPage);
+
+		return "member/list";
+	}
+
+	@GetMapping("/JsonList.do")
+	@ResponseBody
+	// Json으로 받아짐
+	public Map<String, Object> jsonList(HttpServletRequest request, Model model) {
+		String tempClickPage = request.getParameter("clickPage");
+		String search_select = request.getParameter("search_select");
+		String search_word = request.getParameter("search_word");
+		if (tempClickPage == null)
+			tempClickPage = "1";
+		int ClickPage = Integer.parseInt(tempClickPage);
+		int totalPage = 10;
+
+		List<MemberDto> memberList = memberDao.getAllMemberList(1, 5, search_select, search_word);
+
+		String page = PageWriter.pageWrite(totalPage, 5, 3, ClickPage, "member/list.do");
+
+		model.addAttribute("memberList", memberList);
+		model.addAttribute("page", page);
+		model.addAttribute("totalPage", totalPage);
+
+		Map<String, Object> jsonMap = new HashMap<>();
+		jsonMap.put("memberJsonList", memberList);
+
+		return jsonMap;
+	}
+
+	@GetMapping("/Login.do")
+	public String login() {
+		return "member/login";
+	}
+
+	@PostMapping("/LoginProcess.do")
+	public void loginProcess(MemberDto _memberDto, HttpServletResponse response, HttpSession session) throws Exception {
+		memberDto = memberDao.getLoggedMember(_memberDto);
+		if (memberDto != null) {
+			ScriptWriter.alertAndNext(response, "로그인되었습니다.", "../");
+			session.setAttribute("loggedMember", memberDto);
+			session.setAttribute("loggedId", memberDto.getId());
+			session.setAttribute("loggedName", memberDto.getName());
+		} else {
+			ScriptWriter.alertAndBack(response, "아이디 또는 비밀번호를 확인하세요.");
+		}
+	}
+
+	@GetMapping("/Join.do")
+	public String join() {
+		return "member/join";
+	}
+
+	@PostMapping("/JoinProcess.do")
+	public void joinProcess(MemberDto _memberDto, HttpServletRequest request, HttpServletResponse response, MultipartFile multipartFile)
+			throws Exception {
+		_memberDto.setAddress(_memberDto.getAddress01() + " " + _memberDto.getAddress02());
+		_memberDto.setPhone(
+				_memberDto.getPhoneFirst() + "-" + _memberDto.getPhoneMiddle() + "-" + _memberDto.getPhoneLast());
+
+		// img 추가
+		String context = request.getContextPath();
+		String imgFolder = "D:\\IT\\spring\\memberImage\\";
+		String originalFileName = multipartFile.getOriginalFilename();
+		String extention = FilenameUtils.getExtension(originalFileName);
+		String savedFileName = UUID.randomUUID() + "." + extention;
+		File targetFile = new File(imgFolder + savedFileName);
+		String dbFileName = context + "/memberImage/" + savedFileName;
+
+		String thumbSavedFileName = "thumb_" + savedFileName;
+		File thumbTargetFile = new File(imgFolder + thumbSavedFileName);
+		String thumbDbFileName = context + "/memberImage/" + thumbSavedFileName;
+		
+		InputStream fileStream = multipartFile.getInputStream();
+		FileUtils.copyInputStreamToFile(fileStream, targetFile);
+		
+		Thumbnails.of(targetFile).size(100, 100).outputFormat(extention).toFile(thumbTargetFile);
+		
+		_memberDto.setImg(dbFileName);
+		_memberDto.setRealImg(originalFileName);
+		_memberDto.setThumb(thumbDbFileName);
+		
+		int result = memberDao.insertMember(_memberDto);
+		if (result > 0) {
+			ScriptWriter.alertAndNext(response, "회원가입되었습니다.", "../member/Login.do");
+		} else {
+			ScriptWriter.alertAndBack(response, "회원가입에 실패하였습니다.");
+		}
+	}
+
+	@GetMapping("/Logout.do")
+	public void logout(HttpServletResponse response, HttpSession session) throws Exception {
+		ScriptWriter.alertAndNext(response, "로그아웃되었습니다.", "../");
+		session.invalidate();
+	}
+
+	@GetMapping("/Delete.do")
+	public String delete() {
+		return "member/delete";
+	}
+
+	@PostMapping("/DeleteProcess.do")
+	public void deleteProcess(MemberDto _memberDto, HttpServletResponse response, HttpSession session) throws Exception {
+		int result = memberDao.deleteMember(_memberDto);
+		if (result > 0) {
+			ScriptWriter.alertAndNext(response, "회원탈퇴 되었습니다.", "../");
+			session.invalidate();
+		} else {
+			ScriptWriter.alertAndBack(response, "아이디 또는 비밀번호를 확인하세요.");
+		}
+	}
+
+	@GetMapping("/Update.do")
+	public String update(HttpServletRequest request, Model model) {
+		memberDto = memberDao.getSelectOne(request.getParameter("id"));
+
+		String[] phones = memberDto.getPhone().split("-");
+		memberDto.setPhoneFirst(phones[0]);
+		memberDto.setPhoneMiddle(phones[1]);
+		memberDto.setPhoneLast(phones[2]);
+
+		model.addAttribute("memberDto", memberDto);
+
+		return "member/update";
+	}
+
+	@PostMapping("/UpdateProcess.do")
+	public void updateProcess(MemberDto _memberDto, 
+							  HttpServletRequest request, HttpServletResponse response,
+							  MultipartFile multipartFile) throws Exception {
+		_memberDto.setAddress(_memberDto.getAddress01() + " " + _memberDto.getAddress02());
+		_memberDto.setPhone(
+				_memberDto.getPhoneFirst() + "-" + _memberDto.getPhoneMiddle() + "-" + _memberDto.getPhoneLast());
+
+		String context = multipartFile.getContentType();
+		
+		
+		int result = memberDao.updateMember(_memberDto);
+		if (result > 0) {
+			ScriptWriter.alertAndNext(response, "회원정보가 변경되었습니다.", "../member/Info.do?user_id=" + _memberDto.getId());
+		} else {
+			ScriptWriter.alertAndBack(response, "아이디 또는 비밀번호를 확인하세요.");
+		}
+	}
+
+	@GetMapping("/Info.do")
+	public String info(String user_id, Model model) {
+		memberDto = memberDao.getSelectOne(user_id);
+		model.addAttribute("memberInfo", memberDto);
+
+		return "member/info";
+	}
+
+	@ResponseBody // json 리턴(jackson을 pom.xml에 추가해야 함)
+	@PostMapping("/IdCheck.do")
+	public Map<String, Object> idCheck(String user_id) {
+		Map<String, Object> idMap = new HashMap<>();
+
+		int result = memberDao.idCheck(user_id);
+		idMap.put("conut", result);
+
+		return idMap;
+	}
+}

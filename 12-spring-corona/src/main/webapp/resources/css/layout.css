@@ -1,0 +1,49 @@
+img { vertical-align: top; }
+
+body { background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05) 1px, 0, transparent 5%) #333; font-family: "Poppins", "Noto Sans KR"; }
+
+button { background: none; border: none; padding: 0; outline: 0; }
+
+.calendarWrap { position: absolute; right: 30px; top: 60px; width: 300px; }
+
+.calendarWrap .inputBox { background-color: #fff; border-radius: 10px; margin-bottom: 10px; }
+
+.calendarWrap .inputBox input { padding: 10px; width: 100%; height: 30px; outline: none; border: none; background-color: #f8f8f8; }
+
+.calendarBox { -webkit-box-sizing: border-box; box-sizing: border-box; display: none; }
+
+.calendarBox h1 { font-size: 18px; text-align: center; color: #111; background-color: #fff; height: 50px; position: fixed; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; -webkit-box-align: center; -ms-flex-align: center; align-items: center; top: 0; -webkit-box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1); box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1); overflow: hidden; text-shadow: 1px 1px 0px #b3b3b3,2px 2px 0px #b3b3b3,3px 3px 0px #b3b3b3,4px 4px 0px #b3b3b3,5px 5px 0px #b3b3b3,6px 6px 0px #b3b3b3,7px 7px 0px #b3b3b3,8px 8px 0px #b3b3b3,9px 9px 0px #b3b3b3,10px 10px 0px #b3b3b3,11px 11px 0px #b3b3b3,12px 12px 0px #b3b3b3,13px 13px 0px #b3b3b3,14px 14px 0px #b3b3b3,15px 15px 0px #b3b3b3,16px 16px 0px #b3b3b3,17px 17px 0px #b3b3b3,18px 18px 0px #b3b3b3,19px 19px 0px #b3b3b3,20px 20px 0px #b3b3b3,21px 21px 0px #b3b3b3,22px 22px 0px #b3b3b3,23px 23px 0px #b3b3b3,24px 24px 0px #b3b3b3,25px 25px 0px #b3b3b3,26px 26px 0px #b3b3b3,27px 27px 0px #b3b3b3,28px 28px 0px #b3b3b3,29px 29px 0px #b3b3b3,30px 30px 0px #b3b3b3;; }
+
+.calendarBox h1 strong { font-weight: 700; }
+
+.calendarBox .calendar { width: 100%; padding: 15px; background-color: #fff; -webkit-box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.2); box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.2); }
+
+.calendarBox .calendar .header { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
+
+.calendarBox .calendar .header button { background: none; outline: none; border: none; }
+
+.calendarBox .calendar .header .monthBox .month { font-weight: 700; }
+
+.calendarBox .calendar .days { margin: 10px 0; }
+
+.calendarBox .calendar .dates ul, .calendarBox .calendar .days ul { display: -webkit-box; display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; }
+
+.calendarBox .calendar .dates ul li, .calendarBox .calendar .days ul li { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; width: calc(100% / 7 - 4px); margin: 2px; position: relative; }
+
+.calendarBox .calendar .dates ul li.today span, .calendarBox .calendar .days ul li.today span { background-color: #0f0; text-shadow: 1px 1px 0px #00cc00,2px 2px 0px #00cc00,3px 3px 0px #00cc00,4px 4px 0px #00cc00,5px 5px 0px #00cc00,6px 6px 0px #00cc00,7px 7px 0px #00cc00,8px 8px 0px #00cc00,9px 9px 0px #00cc00,10px 10px 0px #00cc00,11px 11px 0px #00cc00,12px 12px 0px #00cc00,13px 13px 0px #00cc00,14px 14px 0px #00cc00,15px 15px 0px #00cc00,16px 16px 0px #00cc00,17px 17px 0px #00cc00,18px 18px 0px #00cc00,19px 19px 0px #00cc00,20px 20px 0px #00cc00,21px 21px 0px #00cc00,22px 22px 0px #00cc00,23px 23px 0px #00cc00,24px 24px 0px #00cc00,25px 25px 0px #00cc00,26px 26px 0px #00cc00,27px 27px 0px #00cc00,28px 28px 0px #00cc00,29px 29px 0px #00cc00,30px 30px 0px #00cc00;; font-weight: 700; }
+
+.calendarBox .calendar .dates ul li:before, .calendarBox .calendar .days ul li:before { content: ""; display: block; padding-top: 100%; }
+
+.calendarBox .calendar .dates ul li span, .calendarBox .calendar .days ul li span { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background-color: #666; -webkit-transition: 0.25s; transition: 0.25s; color: #fff; border-radius: 100%; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; font-size: 12px; overflow: hidden; }
+
+.calendarBox .calendar .dates ul li.sun span, .calendarBox .calendar .days ul li.sun span { background-color: #f00; }
+
+.calendarBox .calendar .dates ul li.sat span, .calendarBox .calendar .days ul li.sat span { background-color: #00f; }
+
+.calendarBox .calendar .dates ul li.blank, .calendarBox .calendar .days ul li.blank { visibility: hidden; opacity: 0; pointer-events: none; }
+
+.calendarBox .calendar .dates ul li.on span, .calendarBox .calendar .days ul li.on span { background-color: #111; }
+
+.chartBox { width: 80%; margin: 100px auto; background-color: rgba(0, 0, 0, 0.5); }
+
+#header { height: 50px; background-color: #fff; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; -webkit-box-align: center; -ms-flex-align: center; align-items: center; overflow: hidden; text-shadow: 1px 1px 0px #e6e6e6,2px 2px 0px #e6e6e6,3px 3px 0px #e6e6e6,4px 4px 0px #e6e6e6,5px 5px 0px #e6e6e6,6px 6px 0px #e6e6e6,7px 7px 0px #e6e6e6,8px 8px 0px #e6e6e6,9px 9px 0px #e6e6e6,10px 10px 0px #e6e6e6,11px 11px 0px #e6e6e6,12px 12px 0px #e6e6e6,13px 13px 0px #e6e6e6,14px 14px 0px #e6e6e6,15px 15px 0px #e6e6e6,16px 16px 0px #e6e6e6,17px 17px 0px #e6e6e6,18px 18px 0px #e6e6e6,19px 19px 0px #e6e6e6,20px 20px 0px #e6e6e6,21px 21px 0px #e6e6e6,22px 22px 0px #e6e6e6,23px 23px 0px #e6e6e6,24px 24px 0px #e6e6e6,25px 25px 0px #e6e6e6,26px 26px 0px #e6e6e6,27px 27px 0px #e6e6e6,28px 28px 0px #e6e6e6,29px 29px 0px #e6e6e6,30px 30px 0px #e6e6e6;; font-weight: 700; font-size: 18px; }

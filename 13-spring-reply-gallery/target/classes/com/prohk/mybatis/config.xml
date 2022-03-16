@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- mybatis를 사용하는 이유는 sql 개발 분리 -->
+<configuration>
+	<typeAliases> <!-- 별명짓기 -->
+		<typeAlias type="com.prohk.model.GalleryDto" alias="GalleryDto"/>
+		<typeAlias type="com.prohk.model.ReplyDto" alias="ReplyDto"/>
+	</typeAliases>
+</configuration>

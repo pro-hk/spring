@@ -1,0 +1,53 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>INSERT</title>
+
+</head>
+<body>
+	<header>
+		<h1>GALLERY</h1>
+		<form class="form" action="InsertProcess.do" method="post">
+			<table>
+				<colgroup>
+					<col style="width:20%">
+					<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th>제목</th>
+						<td>
+							<input type="text" name="title" placeholder="제목을 입력하세요">
+							<div class="category">
+								<label><input name="category" type="checkbox" value="travel"><span>여행</span></label>
+								<label><input name="category" type="checkbox" value="movie"><span>영화</span></label>
+								<label><input name="category" type="checkbox" value="study"><span>공부</span></label>
+								<label><input name="category" type="checkbox" value="life"><span>일상</span></label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>내용</th>
+						<td>
+							<textarea name="contents" placeholder="내용을 입력하세요"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<th>파일</th>
+						<td>
+							<input type="file" name="file" placeholder="업로드할 이미지를 선택하세요">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="btns">
+				<button type="submit">확인</button>
+				<button type="reset">취소</button>
+			</div>
+		</form>
+	</header>
+</body>
+</html>

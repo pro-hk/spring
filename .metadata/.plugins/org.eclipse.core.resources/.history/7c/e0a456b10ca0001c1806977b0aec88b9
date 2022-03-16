@@ -1,0 +1,10 @@
+package com.prohk.model;
+
+public class GalleryDto {
+	private int no;
+	private String title;
+	private String contents;
+	private String img;
+	private String realImg;
+	private String category;
+}
